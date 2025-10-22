@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
-
+import authRoutes from './routes/authRoutes.js';
 // Import your routes
 import materialRoutes from './routes/materialRoutes.js';
 
@@ -31,6 +31,7 @@ app.get('/', (req, res) => {
 
 // API Routes
 app.use('/api/materials', materialRoutes); // 👈 Use your routes here
+app.use('/api/auth', authRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
