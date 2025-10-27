@@ -4,20 +4,29 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import authRoutes from './routes/authRoutes.js';
-// Import your routes
 import materialRoutes from './routes/materialRoutes.js';
 
 dotenv.config();
 
 const app = express();
 
-// Middleware
+// ✅ CORS Configuration - FIX
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://student-portal-one-phi.vercel.app', // Your Vercel domain
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+};
+
+// Middleware - ✅ CORS must be BEFORE routes
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
-}));
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
@@ -30,8 +39,8 @@ app.get('/', (req, res) => {
 });
 
 // API Routes
-app.use('/api/materials', materialRoutes); // 👈 Use your routes here
 app.use('/api/auth', authRoutes);
+app.use('/api/materials', materialRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
